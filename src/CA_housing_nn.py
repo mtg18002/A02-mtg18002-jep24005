@@ -13,8 +13,8 @@ X = housing.frame.drop(columns=["MedHouseVal"])
 y = housing.frame["MedHouseVal"]
 
 # Quick check
-print(df.head())
-print(df.shape)
+print(housing.frame.head())
+print(housing.frame.shape)
 
 # Train, val, and test split
 X_train, X_temp, y_train, y_temp = train_test_split(
@@ -27,3 +27,14 @@ scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_val_scaled = scaler.transform(X_val)
 X_test_scaled = scaler.transform(X_test)
+
+# MLPRegressor with Early Stopping
+mlp = MLPRegressor(
+    hidden_layer_sizes=(128, 64),
+    activation="relu",
+    max_iter=500,
+    early_stopping=True,        # <-- early stopping ON
+    validation_fraction=0.2,    # uses 10% of TRAIN as internal validation
+)
+
+mlp.fit(X_train_scaled, y_train)
