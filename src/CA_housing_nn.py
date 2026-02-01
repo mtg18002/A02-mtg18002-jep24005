@@ -5,6 +5,9 @@ from sklearn.neural_network import MLPRegressor
 from sklearn.metrics import r2_score, mean_absolute_error, mean_absolute_percentage_error
 import numpy as np
 import pandas as pd
+
+import matplotlib
+matplotlib.use("MacOSX")
 import matplotlib.pyplot as plt
 
 # Load California Housing dataset
@@ -30,11 +33,12 @@ X_test_scaled = scaler.transform(X_test)
 
 # MLPRegressor with Early Stopping
 mlp = MLPRegressor(
-    hidden_layer_sizes=(128, 64),
+    hidden_layer_sizes=(12, 4),
     activation="relu",
     max_iter=500,
     early_stopping=True,        # <-- early stopping ON
     validation_fraction=0.2,    # uses 10% of TRAIN as internal validation
+    random_state=42
 )
 
 mlp.fit(X_train_scaled, y_train)
@@ -55,7 +59,7 @@ train_metrics_df = pd.DataFrame([
     metrics_row("train", y_train, y_pred_train)
 ])
 
-print("===== Metrics =====")
+print("===== Train Metrics =====")
 print(train_metrics_df.to_string(index=False))
 
 # Train predictions vs actual
@@ -98,3 +102,12 @@ scatter_with_reference(
 # Save test scatterplot
 plt.savefig("figs/test_actual_vs_pred.png")
 plt.show()
+
+# Loss curve (adjusting hidden layer size)
+plt.figure(figsize=(8,5))
+plt.plot(mlp.loss_curve_)
+plt.xlabel("Epoch")
+plt.ylabel("Training Loss")
+plt.title("Training Loss vs Epoch (sklearn MLP)")
+plt.grid(True)
+plt.show() 
