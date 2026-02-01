@@ -75,3 +75,26 @@ scatter_with_reference(y_train, y_pred_train, "Predicted vs Actual - Train")
 # Save scatterplot
 plt.savefig("figs/train_actual_vs_pred.png")
 plt.show()
+
+
+# Test predictions
+y_pred_test = mlp.predict(X_test_scaled)
+
+# Test predictions metrics
+test_metrics_df = pd.DataFrame([
+    metrics_row("test", y_test, y_pred_test)
+])
+
+print("\n===== Test Metrics =====")
+print(test_metrics_df.to_string(index=False))
+
+# Test predictions vs actual plot
+scatter_with_reference(
+    y_test,
+    y_pred_test,
+    "Predicted vs Actual – Test"
+)
+
+# Save test scatterplot
+plt.savefig("figs/test_actual_vs_pred.png")
+plt.show()
