@@ -38,3 +38,40 @@ mlp = MLPRegressor(
 )
 
 mlp.fit(X_train_scaled, y_train)
+
+# Train predictions
+y_pred_train = mlp.predict(X_train_scaled)
+
+# Train predictions metrics
+def metrics_row(name, y_true, y_pred):
+    return {
+        "split": name,
+        "R2": r2_score(y_true, y_pred),
+        "MAE": mean_absolute_error(y_true, y_pred),
+        "MAPE": mean_absolute_percentage_error(y_true, y_pred)
+    }
+
+train_metrics_df = pd.DataFrame([
+    metrics_row("train", y_train, y_pred_train)
+])
+
+print("===== Metrics =====")
+print(train_metrics_df.to_string(index=False))
+
+# Train predictions vs actual
+def scatter_with_reference(y_true, y_pred, title):
+    plt.figure(figsize=(6,6))
+    plt.scatter(y_true, y_pred, alpha=0.3, s=10)
+    lo = min(np.min(y_true), np.min(y_pred))
+    hi = max(np.max(y_true), np.max(y_pred))
+    plt.plot([lo, hi], [lo, hi], linewidth=1, color='red')  # reference line
+    plt.xlabel("Actual MedHouseVal")
+    plt.ylabel("Predicted MedHouseVal")
+    plt.title(title)
+    plt.tight_layout()
+
+scatter_with_reference(y_train, y_pred_train, "Predicted vs Actual - Train")
+
+# Save scatterplot
+plt.savefig("figs/train_actual_vs_pred.png")
+plt.show()
